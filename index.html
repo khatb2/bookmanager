@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير الروابط - Bookmark Manager</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <i class="fas fa-bookmark"></i>
+                    مدير الروابط
+                </h1>
+                <div class="header-actions">
+                    <button id="login-btn" class="btn btn-outline">
+                        <i class="fab fa-google"></i>
+                        تسجيل الدخول
+                    </button>
+                    <button id="add-bookmark-btn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        إضافة رابط
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="البحث في الروابط...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">الكل</button>
+                    <button class="filter-btn" data-filter="recent">الأحدث</button>
+                    <button class="filter-btn" data-filter="favorites">المفضلة</button>
+                </div>
+            </div>
+            <div class="view-options">
+                <button id="grid-view" class="view-btn active">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button id="list-view" class="view-btn">
+                    <i class="fas fa-list"></i>
+                </button>
+                <button id="import-btn" class="btn btn-outline" title="استيراد الروابط">
+                    <i class="fas fa-download"></i>
+                    استيراد
+                </button>
+                <button id="export-btn" class="btn btn-outline" title="تصدير الروابط">
+                    <i class="fas fa-upload"></i>
+                    تصدير
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <i class="fas fa-bookmark"></i>
+                    <div>
+                        <span class="stat-number" id="total-bookmarks">0</span>
+                        <span class="stat-label">إجمالي الروابط</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-tags"></i>
+                    <div>
+                        <span class="stat-number" id="total-tags">0</span>
+                        <span class="stat-label">الوسوم</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-folder"></i>
+                    <div>
+                        <span class="stat-number" id="total-categories">0</span>
+                        <span class="stat-label">التصنيفات</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bookmarks Grid -->
+            <section id="bookmark-list" class="bookmark-grid">
+                <!-- Bookmarks will be loaded here -->
+            </section>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <h3>لا توجد روابط محفوظة بعد</h3>
+                <p>ابدأ بإضافة أول رابط لك!</p>
+                <button class="btn btn-primary" onclick="document.getElementById('add-bookmark-btn').click()">
+                    <i class="fas fa-plus"></i>
+                    إضافة رابط جديد
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Bookmark Modal -->
+    <div id="add-bookmark-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة رابط جديد</h2>
+                <button class="close-btn" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="bookmark-form" class="bookmark-form">
+                <div class="form-group">
+                    <label for="url-input">الرابط (URL)</label>
+                    <input type="url" id="url-input" placeholder="https://example.com" required>
+                    <button type="button" id="fetch-metadata-btn" class="btn btn-secondary">
+                        <i class="fas fa-download"></i>
+                        جلب البيانات تلقائياً
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="title-input">العنوان</label>
+                    <input type="text" id="title-input" placeholder="عنوان الصفحة" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description-input">الوصف</label>
+                    <textarea id="description-input" placeholder="وصف مختصر للرابط" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image-input">رابط الصورة</label>
+                    <input type="url" id="image-input" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tags-input">الوسوم</label>
+                    <input type="text" id="tags-input" placeholder="وسم1, وسم2, وسم3">
+                    <small>افصل الوسوم بفاصلة</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category-input">التصنيف</label>
+                    <select id="category-input">
+                        <option value="">اختر تصنيف</option>
+                        <option value="work">عمل</option>
+                        <option value="personal">شخصي</option>
+                        <option value="education">تعليم</option>
+                        <option value="entertainment">ترفيه</option>
+                        <option value="news">أخبار</option>
+                        <option value="technology">تقنية</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="cancel-btn" class="btn btn-secondary">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        حفظ الرابط
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>جاري التحميل...</p>
+    </div>
+
+    <script src="./lib/metadata-fetcher.js"></script>
+    <script src="./lib/import-export.js"></script>
+    <script src="./lib/script.js"></script>
+</body>
+</html>
+
