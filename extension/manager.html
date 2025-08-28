@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير الروابط - لوحة التحكم</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #F7F9FC;
+            --surface: #FFFFFF;
+            --text: #1F2937;
+            --muted: #6B7280;
+            --border: #E6E8EE;
+            --primary: #2563EB;
+            --primary-10: #EFF6FF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(17, 24, 39, 0.06);
+        }
+
+        .header h1 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .header p {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.06);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.06);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--text);
+            background: var(--surface);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .bookmark-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.06);
+        }
+
+        .bookmark-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 24px rgba(17, 24, 39, 0.10);
+        }
+
+        .bookmark-image {
+            width: 100%;
+            height: 150px;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 3rem;
+        }
+
+        .bookmark-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bookmark-content {
+            padding: 1.5rem;
+        }
+
+        .bookmark-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .bookmark-description {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .bookmark-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--primary-10);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .bookmark-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bookmark-url {
+            color: var(--muted);
+            font-size: 0.8rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bookmark-url:hover {
+            color: var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-10);
+            color: var(--primary);
+        }
+
+        .action-btn.favorite.active {
+            color: #dc3545;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .bookmarks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-bookmark"></i>
+                مدير الروابط - لوحة التحكم
+            </h1>
+            <p>إدارة وتنظيم روابطك المحفوظة</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-bookmark"></i>
+                </div>
+                <div class="number" id="total-bookmarks">0</div>
+                <div class="label">إجمالي الروابط</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="number" id="favorite-bookmarks">0</div>
+                <div class="label">المفضلة</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="number" id="total-tags">0</div>
+                <div class="label">الوسوم</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">
+                    <i class="fas fa-calendar"></i>
+                </div>
+                <div class="number" id="this-week">0</div>
+                <div class="label">هذا الأسبوع</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="البحث في الروابط...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="add-bookmark">
+                    <i class="fas fa-plus"></i>
+                    إضافة رابط
+                </button>
+                <button class="btn btn-outline" id="import-bookmarks">
+                    <i class="fas fa-download"></i>
+                    استيراد
+                </button>
+                <button class="btn btn-outline" id="export-bookmarks">
+                    <i class="fas fa-upload"></i>
+                    تصدير
+                </button>
+                <a href="http://localhost:8000" class="btn btn-outline" target="_blank">
+                    <i class="fas fa-external-link-alt"></i>
+                    الموقع الكامل
+                </a>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>جاري تحميل الروابط...</p>
+        </div>
+
+        <!-- Bookmarks Grid -->
+        <div id="bookmarks-container" class="bookmarks-grid" style="display: none;">
+            <!-- Bookmarks will be loaded here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="icon">
+                <i class="fas fa-bookmark"></i>
+            </div>
+            <h3>لا توجد روابط محفوظة</h3>
+            <p>ابدأ بحفظ روابطك المفضلة لتظهر هنا</p>
+            <button class="btn btn-primary" onclick="document.getElementById('add-bookmark').click()">
+                <i class="fas fa-plus"></i>
+                إضافة أول رابط
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class BookmarkManager {
+            constructor() {
+                this.bookmarks = [];
+                this.filteredBookmarks = [];
+                this.init();
+            }
+
+            async init() {
+                await this.loadBookmarks();
+                this.bindEvents();
+                this.renderBookmarks();
+                this.updateStats();
+            }
+
+            async loadBookmarks() {
+                try {
+                    const result = await chrome.storage.local.get(['bookmarks']);
+                    this.bookmarks = result.bookmarks || [];
+                    this.filteredBookmarks = [...this.bookmarks];
+                } catch (error) {
+                    console.error('Error loading bookmarks:', error);
+                    this.bookmarks = [];
+                    this.filteredBookmarks = [];
+                }
+            }
+
+            bindEvents() {
+                // Search
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    this.filterBookmarks(e.target.value);
+                });
+
+                // Add bookmark
+                document.getElementById('add-bookmark').addEventListener('click', () => {
+                    this.openWebApp();
+                });
+
+                // Import/Export
+                document.getElementById('import-bookmarks').addEventListener('click', () => {
+                    this.importBookmarks();
+                });
+
+                document.getElementById('export-bookmarks').addEventListener('click', () => {
+                    this.exportBookmarks();
+                });
+            }
+
+            filterBookmarks(query) {
+                if (!query.trim()) {
+                    this.filteredBookmarks = [...this.bookmarks];
+                } else {
+                    const searchTerm = query.toLowerCase();
+                    this.filteredBookmarks = this.bookmarks.filter(bookmark =>
+                        bookmark.title.toLowerCase().includes(searchTerm) ||
+                        bookmark.description.toLowerCase().includes(searchTerm) ||
+                        bookmark.url.toLowerCase().includes(searchTerm) ||
+                        bookmark.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                    );
+                }
+                this.renderBookmarks();
+            }
+
+            renderBookmarks() {
+                const container = document.getElementById('bookmarks-container');
+                const loading = document.getElementById('loading');
+                const emptyState = document.getElementById('empty-state');
+
+                loading.style.display = 'none';
+
+                if (this.filteredBookmarks.length === 0) {
+                    container.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                container.style.display = 'grid';
+
+                container.innerHTML = this.filteredBookmarks.map(bookmark => `
+                    <div class="bookmark-card" onclick="bookmarkManager.openBookmark('${bookmark.url}')">
+                        <div class="bookmark-image">
+                            ${bookmark.image ? 
+                                `<img src="${bookmark.image}" alt="${bookmark.title}" onerror="this.parentElement.innerHTML='<i class=\\"fas fa-bookmark\\"></i>'">` :
+                                '<i class="fas fa-bookmark"></i>'
+                            }
+                        </div>
+                        <div class="bookmark-content">
+                            <div class="bookmark-title">${bookmark.title}</div>
+                            <div class="bookmark-description">${bookmark.description || 'لا يوجد وصف'}</div>
+                            <div class="bookmark-tags">
+                                ${bookmark.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                            <div class="bookmark-actions">
+                                <a href="${bookmark.url}" class="bookmark-url" target="_blank" onclick="event.stopPropagation()">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    ${this.formatUrl(bookmark.url)}
+                                </a>
+                                <div class="action-buttons">
+                                    <button class="action-btn favorite ${bookmark.isFavorite ? 'active' : ''}" 
+                                            onclick="event.stopPropagation(); bookmarkManager.toggleFavorite(${bookmark.id})" 
+                                            title="${bookmark.isFavorite ? 'إزالة من المفضلة' : 'إضافة للمفضلة'}">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                    <button class="action-btn" 
+                                            onclick="event.stopPropagation(); bookmarkManager.deleteBookmark(${bookmark.id})" 
+                                            title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            formatUrl(url) {
+                try {
+                    const urlObj = new URL(url);
+                    return urlObj.hostname;
+                } catch {
+                    return url;
+                }
+            }
+
+            updateStats() {
+                const totalBookmarks = this.bookmarks.length;
+                const favoriteBookmarks = this.bookmarks.filter(b => b.isFavorite).length;
+                const allTags = new Set();
+                this.bookmarks.forEach(b => b.tags.forEach(tag => allTags.add(tag)));
+                
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                const thisWeekBookmarks = this.bookmarks.filter(b => 
+                    new Date(b.createdAt) > oneWeekAgo
+                ).length;
+
+                document.getElementById('total-bookmarks').textContent = totalBookmarks;
+                document.getElementById('favorite-bookmarks').textContent = favoriteBookmarks;
+                document.getElementById('total-tags').textContent = allTags.size;
+                document.getElementById('this-week').textContent = thisWeekBookmarks;
+            }
+
+            async openBookmark(url) {
+                try {
+                    await chrome.tabs.create({ url: url });
+                } catch (error) {
+                    window.open(url, '_blank');
+                }
+            }
+
+            async toggleFavorite(id) {
+                const bookmark = this.bookmarks.find(b => b.id === id);
+                if (bookmark) {
+                    bookmark.isFavorite = !bookmark.isFavorite;
+                    await chrome.storage.local.set({ bookmarks: this.bookmarks });
+                    this.renderBookmarks();
+                    this.updateStats();
+                }
+            }
+
+            async deleteBookmark(id) {
+                if (confirm('هل أنت متأكد من حذف هذا الرابط؟')) {
+                    this.bookmarks = this.bookmarks.filter(b => b.id !== id);
+                    this.filteredBookmarks = this.filteredBookmarks.filter(b => b.id !== id);
+                    await chrome.storage.local.set({ bookmarks: this.bookmarks });
+                    this.renderBookmarks();
+                    this.updateStats();
+                }
+            }
+
+            async openWebApp() {
+                try {
+                    await chrome.tabs.create({ url: 'http://localhost:8000' });
+                } catch (error) {
+                    alert('لا يمكن فتح الموقع الكامل. تأكد من تشغيل الخادم المحلي.');
+                }
+            }
+
+            async importBookmarks() {
+                try {
+                    const bookmarkTree = await chrome.bookmarks.getTree();
+                    const browserBookmarks = this.extractBookmarksFromTree(bookmarkTree);
+                    
+                    const existingUrls = new Set(this.bookmarks.map(b => b.url));
+                    const newBookmarks = browserBookmarks.filter(b => !existingUrls.has(b.url));
+                    
+                    this.bookmarks = [...newBookmarks, ...this.bookmarks];
+                    this.filteredBookmarks = [...this.bookmarks];
+                    
+                    await chrome.storage.local.set({ bookmarks: this.bookmarks });
+                    
+                    this.renderBookmarks();
+                    this.updateStats();
+                    
+                    alert(`تم استيراد ${newBookmarks.length} رابط جديد`);
+                } catch (error) {
+                    console.error('Error importing bookmarks:', error);
+                    alert('خطأ في استيراد الروابط');
+                }
+            }
+
+            extractBookmarksFromTree(nodes) {
+                const bookmarks = [];
+                
+                const traverse = (node) => {
+                    if (node.url) {
+                        bookmarks.push({
+                            id: Date.now() + Math.random(),
+                            url: node.url,
+                            title: node.title,
+                            description: 'مستورد من المتصفح',
+                            image: '',
+                            tags: ['مستورد', 'متصفح'],
+                            category: 'other',
+                            createdAt: new Date(node.dateAdded || Date.now()).toISOString(),
+                            isFavorite: false,
+                            source: 'browser'
+                        });
+                    }
+                    
+                    if (node.children) {
+                        node.children.forEach(traverse);
+                    }
+                };
+                
+                nodes.forEach(traverse);
+                return bookmarks;
+            }
+
+            async exportBookmarks() {
+                try {
+                    const dataStr = JSON.stringify(this.bookmarks, null, 2);
+                    const blob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `bookmarks-${new Date().toISOString().split('T')[0]}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    alert('تم تصدير الروابط بنجاح');
+                } catch (error) {
+                    console.error('Error exporting bookmarks:', error);
+                    alert('خطأ في تصدير الروابط');
+                }
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.bookmarkManager = new BookmarkManager();
+        });
+    </script>
+</body>
+</html>
+
